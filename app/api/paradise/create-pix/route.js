@@ -25,16 +25,6 @@ const PRODUCTS = {
   },
 };
 
-const TRACKING_KEYS = [
-  "utm_source",
-  "utm_medium",
-  "utm_campaign",
-  "utm_content",
-  "utm_term",
-  "src",
-  "sck",
-];
-
 const FIRST_NAMES = ["Ana", "Bruno", "Carla", "Daniel", "Marina", "Rafael", "Juliana", "Lucas"];
 const LAST_NAMES = ["Silva", "Souza", "Costa", "Oliveira", "Santos", "Pereira", "Lima", "Moura"];
 
@@ -44,15 +34,15 @@ function jsonError(message, status = 400) {
 
 function getGatewayConfig() {
   const useGeneratedCustomer = process.env.PARADISE_USE_GENERATED_CUSTOMER === "true";
+  const customerDocument = cleanDigits(process.env.PARADISE_CUSTOMER_DOCUMENT);
+  const customerPhone = cleanDigits(process.env.PARADISE_CUSTOMER_PHONE);
   const config = {
     apiKey: process.env.PARADISE_API_KEY,
-    productHash: process.env.PARADISE_PRODUCT_HASH,
-    postbackUrl: process.env.PARADISE_POSTBACK_URL,
     useGeneratedCustomer,
     customerName: process.env.PARADISE_CUSTOMER_NAME,
     customerEmail: process.env.PARADISE_CUSTOMER_EMAIL,
-    customerDocument: process.env.PARADISE_CUSTOMER_DOCUMENT,
-    customerPhone: process.env.PARADISE_CUSTOMER_PHONE,
+    customerDocument,
+    customerPhone,
   };
 
   const missing = Object.entries({
@@ -84,22 +74,6 @@ function safeSlug(value) {
     .slice(0, 24);
 }
 
-function sanitizeTracking(tracking) {
-  if (!tracking || typeof tracking !== "object") {
-    return undefined;
-  }
-
-  const sanitized = {};
-  for (const key of TRACKING_KEYS) {
-    const value = tracking[key];
-    if (typeof value === "string" && value.trim()) {
-      sanitized[key] = value.slice(0, 250);
-    }
-  }
-
-  return Object.keys(sanitized).length > 0 ? sanitized : undefined;
-}
-
 function pickRandom(items) {
   return items[Math.floor(Math.random() * items.length)];
 }
@@ -109,8 +83,8 @@ function generateCustomerData(config, username) {
     return {
       name: config.customerName,
       email: config.customerEmail,
-      document: cleanDigits(config.customerDocument),
-      phone: cleanDigits(config.customerPhone),
+      document: config.customerDocument,
+      phone: config.customerPhone,
     };
   }
 
@@ -121,7 +95,7 @@ function generateCustomerData(config, username) {
   return {
     name: `${firstName} ${lastName}`,
     email: `cliente_${username}_${seed}@example.com`,
-    document: cleanDigits(config.customerDocument),
+    document: config.customerDocument,
     phone: `119${String(Math.floor(Math.random() * 100000000)).padStart(8, "0")}`,
   };
 }
@@ -159,23 +133,9 @@ export async function POST(request) {
     amount: product.amount,
     description: `${product.description} (${username})`,
     reference,
+    source: "api_externa",
     customer: generateCustomerData(config, username),
   };
-
-  if (config.productHash) {
-    payload.productHash = config.productHash;
-  } else {
-    payload.source = "api_externa";
-  }
-
-  if (config.postbackUrl) {
-    payload.postback_url = config.postbackUrl;
-  }
-
-  const tracking = sanitizeTracking(body.tracking);
-  if (tracking) {
-    payload.tracking = tracking;
-  }
 
   try {
     const response = await fetch(PARADISE_TRANSACTION_URL, {
