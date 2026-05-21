@@ -366,6 +366,11 @@ a {
   color: #bff8d8;
 }
 
+.bonus-pill.danger {
+  background: rgba(255, 13, 22, 0.12);
+  color: #ff5b63;
+}
+
 .price-actions {
   display: grid;
   grid-template-columns: 104px minmax(160px, 200px);

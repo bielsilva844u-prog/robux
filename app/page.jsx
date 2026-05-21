@@ -13,41 +13,56 @@ const bonusProducts = [
     amount: "45.000",
     baseAmount: "22.500",
     bonus: "22.500 a mais",
+    discount: "87% off",
     originalPrice: "R$ 1.179,90",
-    salePrice: "R$ 59,90",
-    featured: true,
+    salePrice: "R$ 149,90",
   },
   {
     id: "bonus-10000",
     amount: "20.000",
     baseAmount: "10.000",
     bonus: "10.000 a mais",
+    discount: "85% off",
     originalPrice: "R$ 589,90",
-    salePrice: "R$ 39,90",
+    salePrice: "R$ 89,90",
   },
   {
     id: "bonus-4500",
     amount: "9.000",
     baseAmount: "4.500",
     bonus: "4.500 a mais",
+    discount: "83% off",
     originalPrice: "R$ 294,90",
-    salePrice: "R$ 27,90",
+    salePrice: "R$ 49,90",
   },
   {
     id: "bonus-3150",
     amount: "6.300",
     baseAmount: "3.150",
     bonus: "3.150 a mais",
+    discount: "80% off",
     originalPrice: "R$ 199,90",
-    salePrice: "R$ 19,90",
+    salePrice: "R$ 39,90",
   },
   {
     id: "bonus-1700",
     amount: "3.400",
     baseAmount: "1.700",
     bonus: "1.700 a mais",
+    discount: "79% off",
     originalPrice: "R$ 117,90",
-    salePrice: "R$ 14,90",
+    salePrice: "R$ 24,90",
+    featured: true,
+    soldLabel: "Mais vendido",
+  },
+  {
+    id: "bonus-1200",
+    amount: "2.400",
+    baseAmount: "1.200",
+    bonus: "1.200 a mais",
+    discount: "75% off",
+    originalPrice: "R$ 79,90",
+    salePrice: "R$ 19,90",
   },
 ];
 
@@ -143,6 +158,8 @@ function ProductRow({ product, onSelect }) {
         </div>
         <div className="pill-row">
           <span className="bonus-pill">{product.bonus}</span>
+          {product.discount ? <span className="bonus-pill danger">{product.discount}</span> : null}
+          {product.soldLabel ? <span className="bonus-pill danger">{product.soldLabel}</span> : null}
           {product.recommended ? <span className="bonus-pill accent">Para você</span> : null}
         </div>
       </div>
