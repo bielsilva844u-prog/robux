@@ -2,6 +2,7 @@
 
 import * as Dialog from "@radix-ui/react-dialog";
 import { Check, Copy, HelpCircle, X } from "lucide-react";
+import QRCode from "qrcode";
 import { useEffect, useState } from "react";
 
 const SUPPORT_URL = "https://discord.gg/pK3CHQdafr";
@@ -163,6 +164,7 @@ export default function Home() {
   const [username, setUsername] = useState("");
   const [copied, setCopied] = useState(false);
   const [pixData, setPixData] = useState(null);
+  const [qrImageSrc, setQrImageSrc] = useState("");
   const [transactionId, setTransactionId] = useState(null);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
@@ -203,11 +205,62 @@ export default function Home() {
     return () => window.clearInterval(intervalId);
   }, [paymentStep, transactionId]);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function buildQrImage() {
+      setQrImageSrc("");
+
+      if (!pixData) {
+        return;
+      }
+
+      if (pixData.qr_code_base64) {
+        const imageSrc = pixData.qr_code_base64.startsWith("data:")
+          ? pixData.qr_code_base64
+          : `data:image/png;base64,${pixData.qr_code_base64}`;
+        setQrImageSrc(imageSrc);
+        return;
+      }
+
+      if (!pixData.qr_code) {
+        return;
+      }
+
+      try {
+        const imageSrc = await QRCode.toDataURL(pixData.qr_code, {
+          errorCorrectionLevel: "M",
+          margin: 2,
+          scale: 8,
+          color: {
+            dark: "#111216",
+            light: "#ffffff",
+          },
+        });
+
+        if (!cancelled) {
+          setQrImageSrc(imageSrc);
+        }
+      } catch {
+        if (!cancelled) {
+          setQrImageSrc("");
+        }
+      }
+    }
+
+    buildQrImage();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [pixData]);
+
   function selectProduct(product) {
     setSelectedProduct(product);
     setPaymentStep(false);
     setCopied(false);
     setPixData(null);
+    setQrImageSrc("");
     setTransactionId(null);
     setCheckoutError("");
     setPaymentStatus("pending");
@@ -220,6 +273,7 @@ export default function Home() {
       setPaymentStep(false);
       setCopied(false);
       setPixData(null);
+      setQrImageSrc("");
       setTransactionId(null);
       setCheckoutError("");
       setPaymentStatus("pending");
@@ -370,20 +424,11 @@ export default function Home() {
                     <li>Abra um ticket no Discord e envie o comprovante.</li>
                   </ol>
                 </div>
-                {pixData?.qr_code_base64 ? (
-                  <img className="qr-image" src={pixData.qr_code_base64} alt="QR Code Pix" />
+                {qrImageSrc ? (
+                  <img className="qr-image" src={qrImageSrc} alt="QR Code Pix" />
                 ) : (
-                  <div className="qr-frame" aria-label="QR Code Pix">
-                    <div className="qr-corner top-left" />
-                    <div className="qr-corner top-right" />
-                    <div className="qr-corner bottom-left" />
-                    <span style={{ gridColumn: "5 / 7", gridRow: "2 / 4" }} />
-                    <span style={{ gridColumn: "8 / 10", gridRow: "4 / 5" }} />
-                    <span style={{ gridColumn: "4 / 5", gridRow: "7 / 9" }} />
-                    <span style={{ gridColumn: "7 / 9", gridRow: "8 / 10" }} />
-                    <span style={{ gridColumn: "10 / 11", gridRow: "6 / 8" }} />
-                    <span style={{ gridColumn: "6 / 7", gridRow: "11 / 12" }} />
-                    <span style={{ gridColumn: "9 / 12", gridRow: "11 / 12" }} />
+                  <div className="qr-loading" aria-label="QR Code Pix">
+                    Gerando QR Code...
                   </div>
                 )}
                 <div className="pix-code">{pixData?.qr_code ?? "Pix indisponível."}</div>

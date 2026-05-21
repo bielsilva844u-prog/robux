@@ -659,19 +659,6 @@ details p {
   margin-top: 4px;
 }
 
-.qr-frame {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: repeat(12, 1fr);
-  gap: 4px;
-  width: 190px;
-  height: 190px;
-  margin: 0 auto;
-  border-radius: 8px;
-  background: #f4f5f8;
-  padding: 14px;
-}
-
 .qr-image {
   width: 190px;
   height: 190px;
@@ -682,38 +669,19 @@ details p {
   padding: 8px;
 }
 
-.qr-frame span,
-.qr-corner {
-  border-radius: 2px;
-  background: #111216;
-}
-
-.qr-corner {
-  position: relative;
-}
-
-.qr-corner::after {
-  position: absolute;
-  inset: 7px;
-  border-radius: 2px;
+.qr-loading {
+  display: grid;
+  width: 190px;
+  height: 190px;
+  margin: 0 auto;
+  place-items: center;
+  border-radius: 8px;
   background: #f4f5f8;
-  box-shadow: inset 0 0 0 5px #111216;
-  content: "";
-}
-
-.qr-corner.top-left {
-  grid-column: 1 / 4;
-  grid-row: 1 / 4;
-}
-
-.qr-corner.top-right {
-  grid-column: 10 / 13;
-  grid-row: 1 / 4;
-}
-
-.qr-corner.bottom-left {
-  grid-column: 1 / 4;
-  grid-row: 10 / 13;
+  color: #17191f;
+  padding: 14px;
+  font-size: 13px;
+  font-weight: 900;
+  text-align: center;
 }
 
 .pix-code {
