@@ -144,6 +144,7 @@ function MeshBackground() {
 function ProductRow({ product, onSelect }) {
   return (
     <div className={`product-row ${product.featured ? "is-featured" : ""}`}>
+      {product.soldLabel ? <span className="featured-ribbon">{product.soldLabel}</span> : null}
       <div className="product-main">
         <div className="amount-group">
           <div className="amount-current">
@@ -159,7 +160,6 @@ function ProductRow({ product, onSelect }) {
         <div className="pill-row">
           <span className="bonus-pill">{product.bonus}</span>
           {product.discount ? <span className="bonus-pill danger">{product.discount}</span> : null}
-          {product.soldLabel ? <span className="bonus-pill danger">{product.soldLabel}</span> : null}
           {product.recommended ? <span className="bonus-pill accent">Para você</span> : null}
         </div>
       </div>

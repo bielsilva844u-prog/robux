@@ -248,6 +248,7 @@ a {
 }
 
 .product-row {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -265,8 +266,29 @@ a {
 
 .product-row.is-featured {
   margin: 0;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.92);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2), 0 16px 38px rgba(255, 255, 255, 0.08);
+}
+
+.featured-ribbon {
+  position: absolute;
+  top: -13px;
+  right: 24px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #17191f;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 950;
+  line-height: 1;
+  box-shadow: 0 8px 22px rgba(255, 255, 255, 0.12);
 }
 
 .product-main {
@@ -856,9 +878,10 @@ details p {
   }
 
   .product-row {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
     width: 100%;
     padding: 12px;
   }
@@ -868,7 +891,8 @@ details p {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
-    width: 100%;
+    flex: 1 1 auto;
+    width: auto;
   }
 
   .amount-group {
@@ -888,17 +912,23 @@ details p {
   }
 
   .price-actions {
-    grid-template-columns: 86px 1fr;
-    align-items: center;
-    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: end;
+    gap: 6px;
+    flex: 0 0 112px;
+    width: auto;
   }
 
   .old-price {
-    text-align: left;
+    flex: initial;
+    text-align: right;
   }
 
   .price-button {
     width: 100%;
+    min-height: 36px;
+    padding: 0 12px;
   }
 
   .checkout-summary {
@@ -952,19 +982,19 @@ details p {
   }
 
   .product-main {
-    align-items: center;
-    text-align: center;
+    align-items: flex-start;
+    text-align: left;
   }
 
   .amount-group {
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .pill-row {
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .old-price {
-    text-align: center;
+    text-align: right;
   }
 }
