@@ -5,7 +5,7 @@ import { Check, Copy, HelpCircle, X } from "lucide-react";
 import QRCode from "qrcode";
 import { useEffect, useState } from "react";
 
-const SUPPORT_URL = "https://discord.gg/pK3CHQdafr";
+const SUPPORT_URL = "https://discord.gg/WXvnQjVQjf";
 
 const bonusProducts = [
   {
@@ -14,8 +14,9 @@ const bonusProducts = [
     baseAmount: "22.500",
     bonus: "22.500 a mais",
     discount: "87% off",
+    offer: "Oferta limitada",
     originalPrice: "R$ 1.179,90",
-    salePrice: "R$ 149,90",
+    salePrice: "R$ 129,90",
   },
   {
     id: "bonus-10000",
@@ -23,8 +24,9 @@ const bonusProducts = [
     baseAmount: "10.000",
     bonus: "10.000 a mais",
     discount: "85% off",
+    offer: "Melhor custo-benefício",
     originalPrice: "R$ 589,90",
-    salePrice: "R$ 89,90",
+    salePrice: "R$ 80,00",
   },
   {
     id: "bonus-4500",
@@ -32,8 +34,9 @@ const bonusProducts = [
     baseAmount: "4.500",
     bonus: "4.500 a mais",
     discount: "83% off",
+    offer: "Popular",
     originalPrice: "R$ 294,90",
-    salePrice: "R$ 49,90",
+    salePrice: "R$ 45,00",
   },
   {
     id: "bonus-3150",
@@ -41,8 +44,9 @@ const bonusProducts = [
     baseAmount: "3.150",
     bonus: "3.150 a mais",
     discount: "80% off",
+    offer: "Entrega instantânea",
     originalPrice: "R$ 199,90",
-    salePrice: "R$ 39,90",
+    salePrice: "R$ 39,99",
   },
   {
     id: "bonus-1700",
@@ -51,7 +55,7 @@ const bonusProducts = [
     bonus: "1.700 a mais",
     discount: "79% off",
     originalPrice: "R$ 117,90",
-    salePrice: "R$ 24,90",
+    salePrice: "R$ 23,00",
     featured: true,
     soldLabel: "Mais vendido",
   },
@@ -61,8 +65,9 @@ const bonusProducts = [
     baseAmount: "1.200",
     bonus: "1.200 a mais",
     discount: "75% off",
+    offer: "+100% de bônus",
     originalPrice: "R$ 79,90",
-    salePrice: "R$ 19,90",
+    salePrice: "R$ 18,90",
   },
 ];
 
@@ -159,7 +164,7 @@ function ProductRow({ product, onSelect }) {
         </div>
         <div className="pill-row">
           <span className="bonus-pill">{product.bonus}</span>
-          {product.discount ? <span className="bonus-pill danger">{product.discount}</span> : null}
+          <span className="bonus-pill danger">Disponível</span>
           {product.recommended ? <span className="bonus-pill accent">Para você</span> : null}
         </div>
       </div>
@@ -351,25 +356,35 @@ export default function Home() {
           <RobuxIcon size="brand" />
           <span>X</span>
         </a>
+        <a className="top-support-button" href={SUPPORT_URL}>
+          <DiscordIcon />
+          <span>Suporte</span>
+        </a>
       </header>
 
       <section className="hero-section" aria-labelledby="title">
         <div className="hero-copy">
+          <span className="hero-badge">
+            <RobuxIcon size="small" />
+            100% A MAIS DE ROBUX NA PRIMEIRA COMPRA
+          </span>
           <h1 id="title">
-            <span>Receba 100% a mais de</span>
-            <span>Robux</span>
+            <span>Mais Robux.</span>
+            <span>Muito menos dinheiro.</span>
           </h1>
           <p>
-            <span>Pague pelo pacote base e receba o dobro de Robux,</span>
-            <span>com 70% de desconto aplicado no valor final.</span>
+            <span>Pague o preço base e receba mais Robux,</span>
+            <span>com desconto real em cada pacote.</span>
           </p>
         </div>
       </section>
 
       <section className="content-shell" id="pacotes">
         <div className="section-title-row">
-          <h2>Pacotes com dobro de Robux</h2>
-          <span className="discount-badge">100% A MAIS</span>
+          <div>
+            <h2>Pacotes com dobro de Robux</h2>
+            <p className="section-subtitle">Dobre seus Robux na primeira compra.</p>
+          </div>
         </div>
 
         <div className="bonus-card">

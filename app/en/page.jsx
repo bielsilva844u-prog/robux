@@ -1,4 +1,4 @@
-const SUPPORT_URL = "https://discord.gg/pK3CHQdafr";
+const SUPPORT_URL = "https://discord.gg/WXvnQjVQjf";
 
 export const metadata = {
   title: "Vault Blox | Brazil Only",

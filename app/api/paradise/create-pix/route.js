@@ -4,27 +4,27 @@ const PARADISE_TRANSACTION_URL = "https://multi.paradisepags.com/api/v1/transact
 
 const PRODUCTS = {
   "bonus-22500": {
-    amount: 14990,
+    amount: 12990,
     description: "45.000 Robux - Vault Blox",
   },
   "bonus-10000": {
-    amount: 8990,
+    amount: 8000,
     description: "20.000 Robux - Vault Blox",
   },
   "bonus-4500": {
-    amount: 4990,
+    amount: 4500,
     description: "9.000 Robux - Vault Blox",
   },
   "bonus-3150": {
-    amount: 3990,
+    amount: 3999,
     description: "6.300 Robux - Vault Blox",
   },
   "bonus-1700": {
-    amount: 2490,
+    amount: 2300,
     description: "3.400 Robux - Vault Blox",
   },
   "bonus-1200": {
-    amount: 1990,
+    amount: 1890,
     description: "2.400 Robux - Vault Blox",
   },
 };
