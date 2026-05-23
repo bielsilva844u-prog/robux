@@ -6,6 +6,7 @@ import QRCode from "qrcode";
 import { useEffect, useState } from "react";
 
 const SUPPORT_URL = "https://discord.gg/WXvnQjVQjf";
+const PIX_EXPIRATION_SECONDS = 10 * 60;
 
 const bonusProducts = [
   {
@@ -88,6 +89,29 @@ const faqs = [
       "Sim. Os botões exibem o preço final com 70% de desconto e os pacotes mostram 100% a mais de Robux.",
   },
 ];
+
+function getPixExpirationTimestamp(expiresAt) {
+  if (expiresAt) {
+    const numericValue = Number(expiresAt);
+    const timestamp = Number.isFinite(numericValue)
+      ? numericValue * (numericValue < 1000000000000 ? 1000 : 1)
+      : Date.parse(expiresAt);
+
+    if (Number.isFinite(timestamp)) {
+      return timestamp;
+    }
+  }
+
+  return Date.now() + PIX_EXPIRATION_SECONDS * 1000;
+}
+
+function formatPixTime(seconds) {
+  const safeSeconds = Math.max(0, seconds);
+  const minutes = Math.floor(safeSeconds / 60);
+  const remainingSeconds = safeSeconds % 60;
+
+  return `${minutes}:${String(remainingSeconds).padStart(2, "0")}`;
+}
 
 function RobuxIcon({ size = "large", className = "" }) {
   return (
@@ -191,6 +215,8 @@ export default function Home() {
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
   const [paymentStatus, setPaymentStatus] = useState("pending");
+  const [pixExpiresAt, setPixExpiresAt] = useState(null);
+  const [pixSecondsRemaining, setPixSecondsRemaining] = useState(PIX_EXPIRATION_SECONDS);
 
   useEffect(() => {
     if (!paymentStep || !transactionId) {
@@ -226,6 +252,21 @@ export default function Home() {
 
     return () => window.clearInterval(intervalId);
   }, [paymentStep, transactionId]);
+
+  useEffect(() => {
+    if (!paymentStep || !pixExpiresAt) {
+      return undefined;
+    }
+
+    function updateTimer() {
+      setPixSecondsRemaining(Math.max(0, Math.ceil((pixExpiresAt - Date.now()) / 1000)));
+    }
+
+    updateTimer();
+    const intervalId = window.setInterval(updateTimer, 1000);
+
+    return () => window.clearInterval(intervalId);
+  }, [paymentStep, pixExpiresAt]);
 
   useEffect(() => {
     let cancelled = false;
@@ -286,6 +327,8 @@ export default function Home() {
     setTransactionId(null);
     setCheckoutError("");
     setPaymentStatus("pending");
+    setPixExpiresAt(null);
+    setPixSecondsRemaining(PIX_EXPIRATION_SECONDS);
     setOpen(true);
   }
 
@@ -299,6 +342,8 @@ export default function Home() {
       setTransactionId(null);
       setCheckoutError("");
       setPaymentStatus("pending");
+      setPixExpiresAt(null);
+      setPixSecondsRemaining(PIX_EXPIRATION_SECONDS);
     }
   }
 
@@ -326,6 +371,7 @@ export default function Home() {
 
       setPixData(data);
       setTransactionId(String(data.transaction_id ?? data.id ?? ""));
+      setPixExpiresAt(getPixExpirationTimestamp(data.expires_at));
       setPaymentStep(true);
       setPaymentStatus("pending");
     } catch (error) {
@@ -435,7 +481,7 @@ export default function Home() {
                 : "Confira o pacote selecionado antes de enviar para o checkout."}
             </Dialog.Description>
 
-            <div className="checkout-summary">
+            <div className={`checkout-summary${paymentStep ? " payment-summary" : ""}`}>
               <div>
                 <span>Pacote</span>
                 <strong>{selectedProduct?.amount} Robux</strong>
@@ -444,6 +490,12 @@ export default function Home() {
                 <span>Preço final</span>
                 <strong>{selectedProduct?.salePrice}</strong>
               </div>
+              {paymentStep ? (
+                <div className="expiration-card">
+                  <span>Expira em</span>
+                  <strong>{formatPixTime(pixSecondsRemaining)}</strong>
+                </div>
+              ) : null}
             </div>
 
             {paymentStep ? (
